@@ -27,33 +27,10 @@ getData <- data.table::fread(input = "activity.csv")
 ```r
 totalSteps <- getData[, c(lapply(.SD, sum, na.rm = FALSE)), .SDcols = c("steps"), by = .(date)] 
 
-print({hist(x = totalSteps$steps ,main="Total number of steps taken each day", xlab="Steps")})
+hist(x = totalSteps$steps ,main="Total number of steps taken each day", xlab="Steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
-
-```
-## $breaks
-## [1]     0  5000 10000 15000 20000 25000
-## 
-## $counts
-## [1]  5 12 28  6  2
-## 
-## $density
-## [1] 1.886792e-05 4.528302e-05 1.056604e-04 2.264151e-05 7.547170e-06
-## 
-## $mids
-## [1]  2500  7500 12500 17500 22500
-## 
-## $xname
-## [1] "totalSteps$steps"
-## 
-## $equidist
-## [1] TRUE
-## 
-## attr(,"class")
-## [1] "histogram"
-```
 
 2. Calculate and report the mean and median total number of steps taken per day 
 
@@ -73,9 +50,10 @@ totalSteps[, .(MeanSteps = mean(steps, na.rm = TRUE), MedianSteps = median(steps
 
 ```r
 intervalData <- getData[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(interval)] 
-print({ggplot(intervalData, aes(x = interval , y = steps)) + 
+
+ggplot(intervalData, aes(x = interval , y = steps)) + 
   geom_line(color="blue", size=1) + 
-  labs(title = "Average Daily Steps", x = "Interval", y ="AverageSteps per day")})
+  labs(title = "Average Daily Steps", x = "Interval", y ="AverageSteps per day")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
@@ -134,11 +112,9 @@ totalSteps[, .(MeanSteps = mean(steps), MedianSteps = median(steps))]
 ```
 
 ```r
-print({
-  ggplot(totalSteps, aes(x = steps)) + 
+ggplot(totalSteps, aes(x = steps)) + 
   geom_histogram(fill = "blue", binwidth = 1000) + 
   labs(title = "Daily Steps", x = "Steps", y = "Frequency")
-})
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
@@ -164,11 +140,10 @@ getData[, `weekday or weekend` := as.factor(`weekday or weekend`)]
 ```r
 getData[is.na(steps), "steps"] <- getData[, c(lapply(.SD, median, na.rm = TRUE)), .SDcols = c("steps")]
 intervalData <- getData[, c(lapply(.SD, mean, na.rm = TRUE)), .SDcols = c("steps"), by = .(interval, `weekday or weekend`)] 
-print({
-  ggplot(intervalData , aes(x = interval , y = steps, color=`weekday or weekend`)) + geom_line() +
+
+ggplot(intervalData , aes(x = interval , y = steps, color=`weekday or weekend`)) + geom_line() +
   labs(title = "Average Daily Steps by Weektype", x = "Interval", y = "No. of Steps") + 
   facet_wrap(~`weekday or weekend` , ncol = 1, nrow=2)
-})
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
